@@ -1,0 +1,4 @@
+wandb
+monai
+einops
+scikit-image==0.19.2

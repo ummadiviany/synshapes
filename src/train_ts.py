@@ -91,10 +91,10 @@ for epoch in range(epochs):
         torch.cuda.empty_cache()
         outputs = model(imgs.to(device))
         # loss = mse_loss(outputs, labels.to(device))
-        # loss = mae_loss(outputs.unsqueeze(1), labels.to(device))
+        loss = mae_loss(outputs.unsqueeze(1), labels.to(device))
         # print(f'Outputs Min: {outputs.min()} Max: {outputs.max()}')
         # print(f'Labels Min: {labels.min()} Max: {labels.max()}')
-        loss = psnr_loss(outputs.unsqueeze(1), labels.to(device))
+        # loss = psnr_loss(outputs.unsqueeze(1), labels.to(device))
         # print(f'Loss: {loss.item()}')
         loss.backward()
         optimizer.step()
@@ -102,7 +102,7 @@ for epoch in range(epochs):
 
         if i % 50 == 0:
             print(f'Epoch {epoch+1}/{epochs}, Step {i+1}/{train_loader_len}, Loss: {loss.item():.4f}')
-    break        
+    # break        
 
     # predict next image prediction every 5 epochs
     if epoch % 5 == 0:

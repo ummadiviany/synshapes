@@ -7,18 +7,10 @@ monai.utils.set_determinism(2000)
 from src.dataloader_ts import get_nearest_multiple
 
 def get_model():
-    # model = monai.networks.nets.UNet(
-    #     spatial_dims=2,
-    #     in_channels=1,
-    #     out_channels=1,
-    #     channels=(8, 16, 32, 64, 128),
-    #     strides=(2, 2, 2, 2),
-    #     num_res_units=3,
-    #     dropout=0.3
-    # )
-    model = Seq2Seq(num_channels=1, num_kernels=2, 
+  
+    model = Seq2Seq(num_channels=1, num_kernels=8, 
     kernel_size=(3, 3), padding=(1, 1), activation="relu", 
-    frame_size=(256, 256), num_layers=2).to(device)
+    frame_size=(256, 256), num_layers=3).to(device)
     return model
 
 
@@ -161,6 +153,7 @@ class Seq2Seq(nn.Module):
         output = self.conv(output[:,:,-1])
         
         return nn.Sigmoid()(output)
+        # return output
 
 if __name__ == "__main__":
     x = torch.randn(16, 1, 3, 256, 256)

@@ -16,7 +16,7 @@ torch.manual_seed(2000)
 start = time.time()
 
 # Hyperparameters
-wandb_log = True
+wandb_log = False
 epochs = 100
 learning_rate = 1e-3
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -59,12 +59,12 @@ if wandb_log:
         'Augumentations' : None,
         'batch_size' : batch_size,
     }
-    # wandb.login()
-    # wandb.init(project="synshapes", config = config)
+    wandb.login()
+    wandb.init(project="synshapes", config = config)
 
 from src.model_ts import get_model
 model = get_model().to(device)
-model.load_state_dict(torch.load('model.pt'))
+
 
 # mse_loss = torch.nn.MSELoss()
 mae_loss = torch.nn.L1Loss()
@@ -133,34 +133,35 @@ for epoch in range(epochs):
         ssim /= test_len
         print(f'Epoch {epoch+1}/{epochs}, Test Loss: {loss/test_loader_len:.4f}, NRMSE: {nrmse:.4f}, PSNR: {psnr:.4f}, SSIM: {ssim:.4f}')
 
-        wandb.log({
-            'epoch' : epoch, 'nrmse_n' : nrmse,
-            'psnr_n' : psnr,   'ssim_n' : ssim 
-        })
+        if wandb_log:
+            wandb.log({
+                'epoch' : epoch, 'nrmse_n' : nrmse,
+                'psnr_n' : psnr,   'ssim_n' : ssim 
+            })
 
         
-        # imgs :  1, 1, 3, 416, 384
-        # label : B 1 1 H W
-        # pred :  B 1 1 H W
-        if epoch % 10 == 0:
+            # imgs :  1, 1, 3, 416, 384
+            # label : B 1 1 H W
+            # pred :  B 1 1 H W
+            if epoch % 10 == 0:
 
-          img_stack = imgs.cpu()
-          label_stack = labels.squeeze(dim=1).cpu()
-          out_stack = outputs.squeeze(dim=1).cpu()
-        
-          
-          img0_stack = img_stack[:,:,0]
-          img1_stack = img_stack[:,:,1]
-          img2_stack = img_stack[:,:,2]
-        
-          f = make_grid(
-            torch.cat(
-              [img0_stack, img1_stack, img2_stack, label_stack, out_stack], dim=3
-            ), nrow=1, padding=15, pad_value=1
-          )
-          images = wandb.Image(f, caption="First three : Input, Fourth : Ground Truth, Last: Prediction")
-          wandb.log({f"Test Predictions": images, "epoch" : epoch})
-          print(f'Logged predictions to wandb')
+                img_stack = imgs.cpu()
+                label_stack = labels.squeeze(dim=1).cpu()
+                out_stack = outputs.squeeze(dim=1).cpu()
+                
+                
+                img0_stack = img_stack[:,:,0]
+                img1_stack = img_stack[:,:,1]
+                img2_stack = img_stack[:,:,2]
+                
+                f = make_grid(
+                    torch.cat(
+                    [img0_stack, img1_stack, img2_stack, label_stack, out_stack], dim=3
+                    ), nrow=1, padding=15, pad_value=1
+                )
+                images = wandb.Image(f, caption="First three : Input, Fourth : Ground Truth, Last: Prediction")
+                wandb.log({f"Test Predictions": images, "epoch" : epoch})
+                print(f'Logged predictions to wandb')
         #   break
     
     # break

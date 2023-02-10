@@ -145,28 +145,44 @@ def draw_triangle(side, center=(128, 128), increasing=True, step=1, dir='data/tr
             triangle_img.save(f'{dir}/triangle_{inc_text}_{str(i).zfill(3)}.png')
         else:
             triangle_img.save(f'{dir}/triangle_{inc_text}_{str(side-i).zfill(3)}.png')
+            
+            
+# Draw a closed contour of random points on a black background
+def draw_random_contour(side, center=(128, 128), increasing=True, step=1, dir='data/random_contour'):
+    dir = 'data/random_contour'
+    dir = f'{dir}_{step}'
+    make_dir(dir)
+    
+    if increasing:
+        range_params = range(0, side, step)
+        inc_text = 'inc'
+    else:
+        range_params = range(side, 0, -step)
+        inc_text = 'dec'
+        
+    
 
 
 if __name__ == "__main__":
     for i in range(1, 2):
-        draw_circle(200, step=i, increasing=True)
-        draw_circle(200, step=i, increasing=False)
+        # draw_circle(200, step=i, increasing=True)
+        # draw_circle(200, step=i, increasing=False)
         
-        draw_square(200, step=i, increasing=True)
-        draw_square(200, step=i, increasing=False)
+        # draw_square(200, step=i, increasing=True)
+        # draw_square(200, step=i, increasing=False)
 
-        draw_rectangle(200, step=i, x_ratio=1, y_ratio=2, increasing=True)
-        draw_rectangle(200, step=i, x_ratio=1, y_ratio=2, increasing=False)
-        draw_rectangle(200, step=i, x_ratio=2, y_ratio=1, increasing=True)
-        draw_rectangle(200, step=i, x_ratio=2, y_ratio=1, increasing=False)
+        # draw_rectangle(200, step=i, x_ratio=1, y_ratio=2, increasing=True)
+        # draw_rectangle(200, step=i, x_ratio=1, y_ratio=2, increasing=False)
+        # draw_rectangle(200, step=i, x_ratio=2, y_ratio=1, increasing=True)
+        # draw_rectangle(200, step=i, x_ratio=2, y_ratio=1, increasing=False)
 
-        draw_ellipse(200, step=i, x_ratio=1, y_ratio=2, increasing=True)
-        draw_ellipse(200, step=i, x_ratio=1, y_ratio=2, increasing=False)
-        draw_ellipse(200, step=i, x_ratio=2, y_ratio=1, increasing=True)
-        draw_ellipse(200, step=i, x_ratio=2, y_ratio=1, increasing=False)
+        # draw_ellipse(200, step=i, x_ratio=1, y_ratio=2, increasing=True)
+        # draw_ellipse(200, step=i, x_ratio=1, y_ratio=2, increasing=False)
+        # draw_ellipse(200, step=i, x_ratio=2, y_ratio=1, increasing=True)
+        # draw_ellipse(200, step=i, x_ratio=2, y_ratio=1, increasing=False)
         
-        draw_triangle(200, step=i, up=False, increasing=True)
-        draw_triangle(200, step=i, up=False, increasing=False)
-        draw_triangle(200, step=i, up=True, increasing=True)
-        draw_triangle(200, step=i, up=True, increasing=False)
+        # draw_triangle(200, step=i, up=False, increasing=True)
+        # draw_triangle(200, step=i, up=False, increasing=False)
+        # draw_triangle(200, step=i, up=True, increasing=True)
+        # draw_triangle(200, step=i, up=True, increasing=False)
         

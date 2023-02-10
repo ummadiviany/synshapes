@@ -69,7 +69,8 @@ model = get_model().to(device)
 # mse_loss = torch.nn.MSELoss()
 mae_loss = torch.nn.L1Loss()
 ce_loss = nn.CrossEntropyLoss()
-# from src.loss_utils import apply_ce_loss
+from src.losses.psnr import PSNRLoss
+psnr_loss = PSNRLoss(max_val=1.0)
 optimizer = torch.optim.Adam(params=model.parameters(), lr=learning_rate)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=epochs, eta_min=1e-5)
 
@@ -90,14 +91,18 @@ for epoch in range(epochs):
         torch.cuda.empty_cache()
         outputs = model(imgs.to(device))
         # loss = mse_loss(outputs, labels.to(device))
-        loss = mae_loss(outputs.unsqueeze(1), labels.to(device))
+        # loss = mae_loss(outputs.unsqueeze(1), labels.to(device))
+        # print(f'Outputs Min: {outputs.min()} Max: {outputs.max()}')
+        # print(f'Labels Min: {labels.min()} Max: {labels.max()}')
+        loss = psnr_loss(outputs.unsqueeze(1), labels.to(device))
+        # print(f'Loss: {loss.item()}')
         loss.backward()
         optimizer.step()
         # break
 
         if i % 50 == 0:
             print(f'Epoch {epoch+1}/{epochs}, Step {i+1}/{train_loader_len}, Loss: {loss.item():.4f}')
-    # break        
+    break        
 
     # predict next image prediction every 5 epochs
     if epoch % 5 == 0:
